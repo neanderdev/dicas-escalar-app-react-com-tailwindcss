@@ -1,21 +1,31 @@
 import { CheckCircle } from 'lucide-react';
 import { ComponentProps } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { tv, VariantProps } from 'tailwind-variants';
 
-export type ButtonProps = ComponentProps<'button'> & {
-    success?: boolean;
-}
+const button = tv({
+    base: 'bg-zinc-50 flex justify-center items-center text-zinc-900 text-sm font-medium rounded hover:bg-zinc-200',
+    variants: {
+        size: {
+            default: 'h-10 px-4',
+            sm: 'h-8 px-3',
+            xs: 'h-6 px-2 text-xs'
+        },
+        success: {
+            true: 'bg-emerald-500 hover:bg-emerald-600',
+        }
+    },
+    defaultVariants: {
+        size: 'default',
+        success: false,
+    },
+})
 
-export function Button({ success = false, className, ...props }: ButtonProps) {
+export type ButtonProps = ComponentProps<'button'> & VariantProps<typeof button>
+
+export function Button({ success, size, className, ...props }: ButtonProps) {
     return (
         <button
-            data-success={success}
-            className={
-                twMerge(
-                    'bg-zinc-50 flex justify-center items-center text-zinc-900 h-10 text-sm font-medium px-4 rounded hover:bg-zinc-200 data-[success=true]:bg-emerald-500 data-[success=true]:hover:bg-emerald-600',
-                    className,
-                )
-            }
+            className={button({ size, success, className })}
             {...props}
         >
             {success ? <CheckCircle className='w-4 h-4' /> : props.children}
